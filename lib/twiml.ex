@@ -14,6 +14,8 @@ defmodule Twiml do
         <Say>world</Say>
       </Response>)
 
+  Say something in another voice:
+
       iex> Twiml.say(nil, "Hello", voice: "woman") |> Twiml.to_xml()
       ~s(<Response>
         <Say voice="woman">Hello</Say>
@@ -28,7 +30,9 @@ defmodule Twiml do
 
   You can embed Twiml tags into other tags using the into_<verb> function:
 
-      iex> Twiml.say("Lets say this inside the gather") |> Twiml.into_gather(language: "en-US", input: "speech") |> Twiml.to_xml()
+      iex> Twiml.say("Lets say this inside the gather")
+      ...> |> Twiml.into_gather(language: "en-US", input: "speech")
+      ...> |> Twiml.to_xml()
       ~s(<Response>
         <Gather language="en-US" input="speech">
           <Say>Lets say this inside the gather</Say>
@@ -37,7 +41,10 @@ defmodule Twiml do
 
   If you have multiple Twiml tags you want to embed, that works too:
 
-      iex> Twiml.say("Hi") |> Twiml.say("We cool?") |> Twiml.into_gather(language: "en-US", input: "speech", hints: "yes, no") |> Twiml.to_xml()
+      iex> Twiml.say("Hi")
+      ...> |> Twiml.say("We cool?")
+      ...> |> Twiml.into_gather(language: "en-US", input: "speech", hints: "yes, no")
+      ...> |> Twiml.to_xml()
       ~s(<Response>
         <Gather language="en-US" input="speech" hints="yes, no">
           <Say>Hi</Say>
@@ -48,7 +55,10 @@ defmodule Twiml do
   It is also possible to just include a few of the preceding tags into the body of another element.
   The `1` decides that we want to only put the last element into the Dial element's body:
 
-      iex> Twiml.say("Outside") |> Twiml.number("+0800-inside") |> Twiml.into_dial([], 1) |> Twiml.to_xml()
+      iex> Twiml.say("Outside")
+      ...> |> Twiml.number("+0800-inside")
+      ...> |> Twiml.into_dial([], 1)
+      ...> |> Twiml.to_xml()
       ~s(<Response>
         <Say>Outside</Say>
         <Dial>

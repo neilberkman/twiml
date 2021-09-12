@@ -25,7 +25,8 @@ defmodule Twiml.Magic do
         verbs ++ unquote(name)(nil, content, attrs)
       end
 
-      def unquote(String.to_atom("into_#{name}"))(verbs, attrs, last_n_elements \\ :all) when is_list(attrs) do
+      def unquote(String.to_atom("into_#{name}"))(verbs, attrs, last_n_elements \\ :all)
+          when is_list(attrs) do
         # How many of the preceding xml elements should be put into this one as
         # children? By default :all will be put in.
         case last_n_elements do

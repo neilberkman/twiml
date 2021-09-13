@@ -1,11 +1,86 @@
-# Twiml
+# TwiML
 
-**TODO: Add description**
+Generate complex TwiML responses for Twilio in an elegant Elixir way.
+
+<!-- MDOC !-->
+
+## Examples
+
+Say 2 things, one after the other:
+
+```elixir
+iex> TwiML.say("Hello") |> TwiML.say("world") |> TwiML.to_xml()
+~s(<Response>
+  <Say>Hello</Say>
+  <Say>world</Say>
+</Response>)
+```
+
+Say something in another voice:
+
+```elixir
+iex> TwiML.say(nil, "Hello", voice: "woman") |> TwiML.to_xml()
+~s(<Response>
+  <Say voice="woman">Hello</Say>
+</Response>)
+```
+
+Leaving the content empty for a TwiML verb, will create a XML Element that has no body:
+
+```elixir
+iex> TwiML.hangup([]) |> TwiML.to_xml()
+~s(<Response>
+  <Hangup/>
+</Response>)
+```
+
+You can embed TwiML tags into other tags using the into_<verb> function:
+
+```elixir
+iex> TwiML.say("Lets say this inside the gather")
+...> |> TwiML.into_gather(language: "en-US", input: "speech")
+...> |> TwiML.to_xml()
+~s(<Response>
+  <Gather language="en-US" input="speech">
+    <Say>Lets say this inside the gather</Say>
+  </Gather>
+</Response>)
+```
+
+If you have multiple TwiML tags you want to embed, that works too:
+
+```elixir
+iex> TwiML.say("Hi")
+...> |> TwiML.say("We cool?")
+...> |> TwiML.into_gather(language: "en-US", input: "speech", hints: "yes, no")
+...> |> TwiML.to_xml()
+~s(<Response>
+  <Gather language="en-US" input="speech" hints="yes, no">
+    <Say>Hi</Say>
+    <Say>We cool?</Say>
+  </Gather>
+</Response>)
+```
+
+It is also possible to just include a few of the preceding tags into the body of another element.
+The `1` decides that we want to only put the last element into the Dial element's body:
+
+```elixir
+iex> TwiML.say("Calling Yodel")
+...> |> TwiML.number("+1 415-483-0400")
+...> |> TwiML.into_dial([], 1)
+...> |> TwiML.to_xml()
+~s(<Response>
+  <Say>Calling Yodel</Say>
+  <Dial>
+    <Number>+1 415-483-0400</Number>
+  </Dial>
+</Response>)
+```
+
+<!-- MDOC !-->
 
 ## Installation
-
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `twiml` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
@@ -15,7 +90,6 @@ def deps do
 end
 ```
 
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/twiml](https://hexdocs.pm/twiml).
+## License
 
+[MIT](./LICENSE)

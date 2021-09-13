@@ -1,6 +1,4 @@
 defmodule Twiml do
-  use Twiml.Magic
-
   @moduledoc """
   Generate complex Twilio responses in a single pipeline.
 
@@ -66,21 +64,25 @@ defmodule Twiml do
         </Dial>
       </Response>)
   """
-
-  twiml_verb(:play, :Play)
-  twiml_verb(:dial, :Dial)
-  twiml_verb(:number, :Number)
-  twiml_verb(:say, :Say)
-  twiml_verb(:pause, :Pause)
-  twiml_verb(:gather, :Gather)
-  twiml_verb(:hangup, :Hangup)
-
-  defp build_verb(verb, attrs, children) do
-    {verb, attrs, children}
-  end
+  use Twiml.Magic,
+    verbs: [
+      :dial,
+      :gather,
+      :hangup,
+      :number,
+      :pause,
+      :play,
+      :say
+    ]
 
   def to_xml(verbs) do
     {:Response, [], verbs}
     |> XmlBuilder.generate()
+  end
+
+
+  defp build_verb(verb, attrs, children) do
+    verb = verb |> Atom.to_string() |> String.capitalize()
+    {verb, attrs, children}
   end
 end

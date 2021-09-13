@@ -1,8 +1,8 @@
-defmodule Twiml.Magic do
+defmodule TwiML.Magic do
   defmacro __using__(verbs: verbs) do
     quote do
-      require Twiml.Magic
-      import Twiml.Magic
+      require TwiML.Magic
+      import TwiML.Magic
     end
 
     for verb <- verbs, do: twiml_verb(verb)

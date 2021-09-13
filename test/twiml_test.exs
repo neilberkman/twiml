@@ -1,4 +1,4 @@
-defmodule TwimlTest do
+defmodule TwiMLTest do
   use ExUnit.Case
-  doctest Twiml
+  doctest TwiML
 end

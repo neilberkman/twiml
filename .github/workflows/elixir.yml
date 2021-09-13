@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  repository_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      MIX_ENV: test
+    strategy:
+      fail-fast: true
+      matrix:
+        include:
+          - pair:
+              elixir: 1.12.x
+              otp: 23.x
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: erlef/setup-beam@v1
+        with:
+          otp-version: ${{matrix.pair.otp}}
+          elixir-version: ${{matrix.pair.elixir}}
+
+      - name: Install Dependencies
+        run: mix deps.get --only test
+
+      - run: mix format --check-formatted
+
+      - run: mix deps.get && mix deps.unlock --check-unused
+
+      - run: mix deps.compile
+
+      - run: mix compile --warnings-as-errors
+
+      - run: mix test

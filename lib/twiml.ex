@@ -16,9 +16,9 @@ defmodule TwiML do
       :say
     ]
 
-  def to_xml(verbs) do
-    {:Response, [], verbs}
-    |> XmlBuilder.generate()
+  def to_xml(verbs, opts \\ []) do
+    XmlBuilder.document(:Response, verbs)
+    |> XmlBuilder.generate(opts)
   end
 
   defp build_verb(verb, attrs, children) do

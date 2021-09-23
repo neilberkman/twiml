@@ -10,7 +10,8 @@ Say 2 things, one after the other:
 
 ```elixir
 iex> TwiML.say("Hello") |> TwiML.say("world") |> TwiML.to_xml()
-~s(<Response>
+~s(<?xml version="1.0" encoding="UTF-8"?>
+<Response>
   <Say>Hello</Say>
   <Say>world</Say>
 </Response>)
@@ -20,7 +21,8 @@ Say something in another voice:
 
 ```elixir
 iex> TwiML.say(nil, "Hello", voice: "woman") |> TwiML.to_xml()
-~s(<Response>
+~s(<?xml version="1.0" encoding="UTF-8"?>
+<Response>
   <Say voice="woman">Hello</Say>
 </Response>)
 ```
@@ -29,7 +31,8 @@ Leaving the content empty for a TwiML verb, will create a XML Element that has n
 
 ```elixir
 iex> TwiML.hangup([]) |> TwiML.to_xml()
-~s(<Response>
+~s(<?xml version="1.0" encoding="UTF-8"?>
+<Response>
   <Hangup/>
 </Response>)
 ```
@@ -40,7 +43,8 @@ You can embed TwiML tags into other tags using the into_<verb> function:
 iex> TwiML.say("Lets say this inside the gather")
 ...> |> TwiML.into_gather(language: "en-US", input: "speech")
 ...> |> TwiML.to_xml()
-~s(<Response>
+~s(<?xml version="1.0" encoding="UTF-8"?>
+<Response>
   <Gather language="en-US" input="speech">
     <Say>Lets say this inside the gather</Say>
   </Gather>
@@ -54,7 +58,8 @@ iex> TwiML.say("Hi")
 ...> |> TwiML.say("We cool?")
 ...> |> TwiML.into_gather(language: "en-US", input: "speech", hints: "yes, no")
 ...> |> TwiML.to_xml()
-~s(<Response>
+~s(<?xml version="1.0" encoding="UTF-8"?>
+<Response>
   <Gather language="en-US" input="speech" hints="yes, no">
     <Say>Hi</Say>
     <Say>We cool?</Say>
@@ -70,7 +75,8 @@ iex> TwiML.say("Calling Yodel")
 ...> |> TwiML.number("+1 415-483-0400")
 ...> |> TwiML.into_dial([], 1)
 ...> |> TwiML.to_xml()
-~s(<Response>
+~s(<?xml version="1.0" encoding="UTF-8"?>
+<Response>
   <Say>Calling Yodel</Say>
   <Dial>
     <Number>+1 415-483-0400</Number>

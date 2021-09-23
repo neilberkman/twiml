@@ -13,6 +13,7 @@ defmodule TwiML do
       :number,
       :pause,
       :play,
+      :redirect,
       :say
     ]
 

@@ -14,6 +14,7 @@ defmodule TwiML do
       :pause,
       :play,
       :redirect,
+      :reject,
       :say
     ]
 

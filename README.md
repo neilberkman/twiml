@@ -9,7 +9,7 @@ Generate complex TwiML responses for Twilio in an elegant Elixir way.
 Say something:
 
 ```elixir
-iex> TwiML.say(nil, "Hello") |> TwiML.to_xml()
+iex> TwiML.say("Hello") |> TwiML.to_xml()
 ~s(<?xml version="1.0" encoding="UTF-8"?>
 <Response>
   <Say>Hello</Say>
@@ -30,17 +30,18 @@ iex> TwiML.say("Hello") |> TwiML.say("world") |> TwiML.to_xml()
 Say something in another voice:
 
 ```elixir
-iex> TwiML.say(nil, "Hello", voice: "woman") |> TwiML.to_xml()
+iex> TwiML.say("Hello", voice: "woman") |> TwiML.to_xml()
 ~s(<?xml version="1.0" encoding="UTF-8"?>
 <Response>
   <Say voice="woman">Hello</Say>
 </Response>)
 ```
 
-Leaving the content empty for a TwiML verb, will create a TwiML element that has no body:
+Leaving the content empty for a TwiML verb, will create a TwiML element that has
+no body:
 
 ```elixir
-iex> TwiML.hangup([]) |> TwiML.to_xml()
+iex> TwiML.hangup() |> TwiML.to_xml()
 ~s(<?xml version="1.0" encoding="UTF-8"?>
 <Response>
   <Hangup/>
@@ -77,13 +78,14 @@ iex> TwiML.say("Hi")
 </Response>)
 ```
 
-It is also possible to just include a few of the preceding tags into the body of another element.
-The `1` decides that we want to only put the last element into the Dial element's body:
+It is also possible to just include a few of the preceding tags into the body of
+another element. The `1` decides that we want to only put the last element into
+the Dial element's body:
 
 ```elixir
 iex> TwiML.say("Calling Yodel")
 ...> |> TwiML.number("+1 415-483-0400")
-...> |> TwiML.into_dial([], 1)
+...> |> TwiML.into_dial(1)
 ...> |> TwiML.to_xml()
 ~s(<?xml version="1.0" encoding="UTF-8"?>
 <Response>
@@ -94,36 +96,48 @@ iex> TwiML.say("Calling Yodel")
 </Response>)
 ```
 
-Multiple calls to `into_*` functions allow building complex nested TwiML structures without losing readability in the code due to nested function calls.
-  
+The `into_*` functions can take the number of preceding tags, attributes or both
+as arguments:
+
 ```elixir
-iex> TwiML.say("Calling Yodel")
-...> |> TwiML.identity("deadmau5")
-...> |> TwiML.parameter([], name: "first_name", value: "Joel")
-...> |> TwiML.parameter([], name: "last_name", value: "Zimmermann")
-...> |> TwiML.into_client([], 3)
-...> |> TwiML.into_dial([], 1)
+iex> TwiML.identity("venkman")
+...> |> TwiML.into_client(1)
+...> |> TwiML.identity("stantz")
+...> |> TwiML.into_client(1, method: "GET")
+...> |> TwiML.into_dial(caller: "+1 415-483-0400")
 ...> |> TwiML.to_xml()
 ~s(<?xml version="1.0" encoding="UTF-8"?>
 <Response>
-  <Say>Calling Yodel</Say>
-  <Dial>
+  <Dial caller="+1 415-483-0400">
     <Client>
-      <Identity>deadmau5</Identity>
-      <Parameter name="first_name" value="Joel"/>
-      <Parameter name="last_name" value="Zimmermann"/>
+      <Identity>venkman</Identity>
+    </Client>
+    <Client method="GET">
+      <Identity>stantz</Identity>
     </Client>
   </Dial>
 </Response>)
 ```
 
-Reject a call:
+Multiple calls to `into_*` functions allow building complex nested TwiML
+structures without losing readability in the code due to nested function calls:
 
 ```elixir
-iex> TwiML.reject([]) |> TwiML.to_xml()
+iex> TwiML.identity("venkman")
+...> |> TwiML.parameter(name: "first_name", value: "Peter")
+...> |> TwiML.parameter(name: "last_name", value: "Venkman")
+...> |> TwiML.into_client(3)
+...> |> TwiML.into_dial(1)
+...> |> TwiML.to_xml()
 ~s(<?xml version="1.0" encoding="UTF-8"?>
 <Response>
-  <Reject/>
+  <Dial>
+    <Client>
+      <Identity>venkman</Identity>
+      <Parameter name="first_name" value="Peter"/>
+      <Parameter name="last_name" value="Venkman"/>
+    </Client>
+  </Dial>
 </Response>)
 ```
 
@@ -134,7 +148,7 @@ iex> TwiML.reject([]) |> TwiML.to_xml()
 ```elixir
 def deps do
   [
-    {:twiml, "~> 0.1.0"}
+    {:twiml, "~> 0.2.0"}
   ]
 end
 ```

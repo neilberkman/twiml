@@ -6,22 +6,25 @@ defmodule TwiML do
              |> Enum.fetch!(1)
 
   use TwiML.Magic,
+    # The nesting and duplication is intentionally as it improves comparing the
+    # verbs with the official TwiML at https://www.twilio.com/docs/voice/twiml
     verbs: [
-      :client,
-      :dial,
+      [:connect, :autopilot, :siprec, :stream, :virtual_agent],
+      [:dial, :client, [:identity, :parameter], :conference, :number, :queue, :sim, :sip],
       :enqueue,
       :gather,
       :hangup,
-      :identity,
       :leave,
-      :number,
-      :parameter,
       :pause,
+      [:pay, :prompt],
       :play,
       :record,
       :redirect,
+      :refer,
       :reject,
-      :say
+      :say,
+      :siprec,
+      :stream
     ]
 
   def to_xml(verbs, opts \\ []) do

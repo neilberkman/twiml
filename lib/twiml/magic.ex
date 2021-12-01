@@ -5,7 +5,7 @@ defmodule TwiML.Magic do
       import TwiML.Magic
     end
 
-    for verb <- verbs, do: twiml_verb(verb)
+    for verb <- verbs |> List.flatten() |> Enum.uniq(), do: twiml_verb(verb)
   end
 
   def twiml_verb(verb) do

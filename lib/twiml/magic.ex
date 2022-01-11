@@ -1,4 +1,6 @@
 defmodule TwiML.Magic do
+  @moduledoc false
+
   defmacro __using__(verbs: verbs) do
     quote do
       require TwiML.Magic

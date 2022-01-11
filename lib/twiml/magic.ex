@@ -18,6 +18,18 @@ defmodule TwiML.Magic do
         [build_verb(unquote(verb), [], content)]
       end
 
+      def unquote(verb)({:safe, text} = content) when is_binary(text) do
+        [build_verb(unquote(verb), [], content)]
+      end
+
+      def unquote(verb)({:cdata, text} = content) when is_binary(text) do
+        [build_verb(unquote(verb), [], content)]
+      end
+
+      def unquote(verb)({:iodata, text} = content) when is_list(text) do
+        [build_verb(unquote(verb), [], content)]
+      end
+
       def unquote(verb)(verbs_or_attrs) when is_list(verbs_or_attrs) do
         if Keyword.keyword?(verbs_or_attrs) do
           [build_verb(unquote(verb), verbs_or_attrs, [])]
@@ -31,6 +43,18 @@ defmodule TwiML.Magic do
       end
 
       def unquote(verb)(content, attrs) when is_binary(content) do
+        [build_verb(unquote(verb), attrs, content)]
+      end
+
+      def unquote(verb)({:safe, text} = content, attrs) when is_binary(text) do
+        [build_verb(unquote(verb), attrs, content)]
+      end
+
+      def unquote(verb)({:cdata, text} = content, attrs) when is_binary(text) do
+        [build_verb(unquote(verb), attrs, content)]
+      end
+
+      def unquote(verb)({:iodata, text} = content, attrs) when is_list(text) do
         [build_verb(unquote(verb), attrs, content)]
       end
 

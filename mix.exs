@@ -1,9 +1,9 @@
 defmodule Twiml.MixProject do
   use Mix.Project
 
-  @version "0.2.0"
+  @version "0.3.0"
   @url "https://github.com/YodelTalk/twiml"
-  @maintainers ["Christoph Leitner", "Mario Uher"]
+  @maintainers ["Mario Uher"]
 
   def project do
     [

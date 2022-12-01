@@ -222,7 +222,7 @@ iex> TwiML.say("Hello", voice: "", loop: nil)
 ```elixir
 def deps do
   [
-    {:twiml, "~> 0.2.0"}
+    {:twiml, "~> 0.4.0"}
   ]
 end
 ```

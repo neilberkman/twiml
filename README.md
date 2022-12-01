@@ -205,6 +205,16 @@ iex> TwiML.say("Sorry, calls are currently unavailable")
 </Response>)
 ```
 
+Empty attributes are not included in the generated TwiML:
+
+```elixir
+iex> TwiML.say("Hello", voice: "", loop: nil)
+...> |> TwiML.to_xml()
+~s(<?xml version="1.0" encoding="UTF-8"?>
+<Response>
+  <Say>Hello</Say>
+</Response>)
+```
 <!-- MDOC !-->
 
 ## Installation

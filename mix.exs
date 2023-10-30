@@ -14,6 +14,10 @@ defmodule Twiml.MixProject do
       deps: deps(),
       description: description(),
       package: package(),
+      preferred_cli_env: [
+        docs: :docs,
+        "hex.publish": :docs
+      ],
 
       # Docs
       name: "TwiML",
@@ -26,7 +30,7 @@ defmodule Twiml.MixProject do
   defp deps do
     [
       {:xml_builder, "~> 2.2"},
-      {:ex_doc, "~> 0.24", only: :dev, runtime: false}
+      {:ex_doc, "~> 0.24", only: :docs}
     ]
   end
 

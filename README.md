@@ -10,7 +10,6 @@ Say something:
 
 ```elixir
 iex> TwiML.say("Hello") |> TwiML.to_xml()
-
 """
 <?xml version="1.0" encoding="UTF-8"?>
 <Response>
@@ -23,7 +22,6 @@ Say 2 things, one after the other:
 
 ```elixir
 iex> TwiML.say("Hello") |> TwiML.say("world") |> TwiML.to_xml()
-
 """
 <?xml version="1.0" encoding="UTF-8"?>
 <Response>
@@ -37,7 +35,6 @@ Say something in another voice:
 
 ```elixir
 iex> TwiML.say("Hello", voice: "woman") |> TwiML.to_xml()
-
 """
 <?xml version="1.0" encoding="UTF-8"?>
 <Response>
@@ -51,7 +48,6 @@ no body:
 
 ```elixir
 iex> TwiML.hangup() |> TwiML.to_xml()
-
 """
 <?xml version="1.0" encoding="UTF-8"?>
 <Response>
@@ -66,7 +62,6 @@ You can embed TwiML tags into other tags using the `into_*` function:
 iex> TwiML.say("Lets say this inside the gather")
 ...> |> TwiML.into_gather(language: "en-US", input: "speech")
 ...> |> TwiML.to_xml()
-
 """
 <?xml version="1.0" encoding="UTF-8"?>
 <Response>
@@ -84,7 +79,6 @@ iex> TwiML.say("Hi")
 ...> |> TwiML.say("We cool?")
 ...> |> TwiML.into_gather(language: "en-US", input: "speech", hints: "yes, no")
 ...> |> TwiML.to_xml()
-
 """
 <?xml version="1.0" encoding="UTF-8"?>
 <Response>
@@ -105,7 +99,6 @@ iex> TwiML.say("Calling Yodel")
 ...> |> TwiML.number("+1 415-483-0400")
 ...> |> TwiML.into_dial(1)
 ...> |> TwiML.to_xml()
-
 """
 <?xml version="1.0" encoding="UTF-8"?>
 <Response>
@@ -127,7 +120,6 @@ iex> TwiML.identity("venkman")
 ...> |> TwiML.into_client(1, method: "GET")
 ...> |> TwiML.into_dial(caller: "+1 415-483-0400")
 ...> |> TwiML.to_xml()
-
 """
 <?xml version="1.0" encoding="UTF-8"?>
 <Response>
@@ -153,7 +145,6 @@ iex> TwiML.identity("venkman")
 ...> |> TwiML.into_client(3)
 ...> |> TwiML.into_dial(1)
 ...> |> TwiML.to_xml()
-
 """
 <?xml version="1.0" encoding="UTF-8"?>
 <Response>
@@ -173,7 +164,6 @@ Attributes can be provided both as `snake_case` or `camelCase`, but the latter i
 ```elixir
 iex> TwiML.dial("+1 415-483-0400", recordingStatusCallback: "https://example.org", recording_status_callback_method: "POST")
 ...> |> TwiML.to_xml()
-
 """
 <?xml version="1.0" encoding="UTF-8"?>
 <Response>
@@ -186,8 +176,8 @@ Safe binary strings, **IO Data** or **CDATA** are supported as well. Make sure
 to only mark actually safe data as safe!
 
 ```elixir
-iex> TwiML.say({:safe, "<tag>Hello World</tag>"}) |> TwiML.to_xml()
-
+iex> TwiML.say({:safe, "<tag>Hello World</tag>"})
+...> |> TwiML.to_xml()
 """
 <?xml version="1.0" encoding="UTF-8"?>
 <Response>
@@ -195,8 +185,8 @@ iex> TwiML.say({:safe, "<tag>Hello World</tag>"}) |> TwiML.to_xml()
 </Response>\
 """
 
-iex> TwiML.say({:iodata, [104, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100]}) |> TwiML.to_xml()
-
+iex> TwiML.say({:iodata, [104, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100]})
+...> |> TwiML.to_xml()
 """
 <?xml version="1.0" encoding="UTF-8"?>
 <Response>
@@ -204,8 +194,8 @@ iex> TwiML.say({:iodata, [104, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100]}
 </Response>\
 """
 
-iex> TwiML.say({:cdata, "<Hello>\\<World>"}) |> TwiML.to_xml()
-
+iex> TwiML.say({:cdata, "<Hello>\\<World>"})
+...> |> TwiML.to_xml()
 """
 <?xml version="1.0" encoding="UTF-8"?>
 <Response>
@@ -217,8 +207,8 @@ iex> TwiML.say({:cdata, "<Hello>\\<World>"}) |> TwiML.to_xml()
 This also works with attributes:
 
 ```elixir
-iex> TwiML.say({:safe, "<tag>Hello World</tag>"}, voice: "Polly.Joanna") |> TwiML.to_xml()
-
+iex> TwiML.say({:safe, "<tag>Hello World</tag>"}, voice: "Polly.Joanna")
+...> |> TwiML.to_xml()
 """
 <?xml version="1.0" encoding="UTF-8\"?>
 <Response>
@@ -226,8 +216,8 @@ iex> TwiML.say({:safe, "<tag>Hello World</tag>"}, voice: "Polly.Joanna") |> TwiM
 </Response>\
 """
 
-iex> TwiML.say({:iodata, [104, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100]}, voice: "Polly.Joanna") |> TwiML.to_xml()
-
+iex> TwiML.say({:iodata, [104, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100]}, voice: "Polly.Joanna")
+...> |> TwiML.to_xml()
 """
 <?xml version="1.0" encoding="UTF-8"?>
 <Response>
@@ -235,8 +225,8 @@ iex> TwiML.say({:iodata, [104, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100]}
 </Response>\
 """
 
-iex> TwiML.say({:cdata, "<Hello>\\<World>"}, voice: "Polly.Joanna") |> TwiML.to_xml()
-
+iex> TwiML.say({:cdata, "<Hello>\\<World>"}, voice: "Polly.Joanna")
+...> |> TwiML.to_xml()
 """
 <?xml version="1.0" encoding="UTF-8"?>
 <Response>
@@ -248,8 +238,9 @@ iex> TwiML.say({:cdata, "<Hello>\\<World>"}, voice: "Polly.Joanna") |> TwiML.to_
 Comments can help with debugging (yes, they are somewhat ugly, until `xml_builder` properly supports them):
 
 ```elixir
-iex> TwiML.comment("Blocked because of insufficient funds") |> TwiML.reject() |> TwiML.to_xml()
-
+iex> TwiML.comment("Blocked because of insufficient funds")
+...> |> TwiML.reject()
+...> |> TwiML.to_xml()
 """
 <?xml version="1.0" encoding="UTF-8"?>
 <Response>
@@ -266,7 +257,6 @@ iex> TwiML.say("Sorry, calls are currently unavailable")
 ...> |> TwiML.comment("Blocked because of insufficient funds")
 ...> |> TwiML.reject()
 ...> |> TwiML.to_xml()
-
 """
 <?xml version="1.0" encoding="UTF-8"?>
 <Response>
@@ -282,7 +272,6 @@ Empty attributes are not included in the generated TwiML:
 ```elixir
 iex> TwiML.say("Hello", voice: "", loop: nil)
 ...> |> TwiML.to_xml()
-
 """
 <?xml version="1.0" encoding="UTF-8"?>
 <Response>

@@ -43,7 +43,7 @@ defmodule Twiml.MixProject do
 
   defp description() do
     """
-    Generate complex TwiML responses for Twilio in an elegant Elixir way.
+    Generate complex TwiML documents for Twilio in an elegant Elixir way.
     """
   end
 

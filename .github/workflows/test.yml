@@ -17,29 +17,6 @@ jobs:
       # https://hexdocs.pm/elixir/1.16.0/compatibility-and-deprecations.html#compatibility-between-elixir-and-erlang-otp
       matrix:
         include:
-          - elixir: 1.11
-            otp: 21.x
-          - elixir: 1.11
-            otp: 22.x
-          - elixir: 1.11
-            otp: 23.x
-
-          - elixir: 1.12
-            otp: 22.x
-          - elixir: 1.12
-            otp: 23.x
-          - elixir: 1.12
-            otp: 24.x
-
-          - elixir: 1.13
-            otp: 22.x
-          - elixir: 1.13
-            otp: 23.x
-          - elixir: 1.13
-            otp: 24.x
-          - elixir: 1.13
-            otp: 25.x
-
           - elixir: 1.14
             otp: 23.x
           - elixir: 1.14

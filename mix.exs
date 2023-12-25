@@ -37,17 +37,18 @@ defmodule Twiml.MixProject do
   defp deps do
     [
       {:xml_builder, "~> 2.2"},
-      {:ex_doc, "~> 0.31", only: :docs}
+      {:ex_doc, "~> 0.31", only: :docs},
+      {:styler, ">= 0.11.1", only: [:dev, :test], runtime: false}
     ]
   end
 
-  defp description() do
+  defp description do
     """
     Generate complex TwiML documents for Twilio in an elegant Elixir way.
     """
   end
 
-  defp package() do
+  defp package do
     [
       maintainers: @maintainers,
       licenses: ["MIT"],

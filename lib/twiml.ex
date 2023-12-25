@@ -1,7 +1,4 @@
 defmodule TwiML do
-  import TwiML.Camelize, only: [camelize: 2]
-
-  @external_resource "README.md"
   @moduledoc """
   Generate complex TwiML documents for Twilio in an elegant Elixir way.
 
@@ -14,9 +11,9 @@ defmodule TwiML do
   #{"README.md" |> File.read!() |> String.split("<!-- MDOC !-->") |> Enum.fetch!(1)}
   """
 
+  # The nesting and duplication is intentionally as it improves comparing the
+  # verbs with the official TwiML at https://www.twilio.com/docs/voice/twiml
   use TwiML.Magic,
-    # The nesting and duplication is intentionally as it improves comparing the
-    # verbs with the official TwiML at https://www.twilio.com/docs/voice/twiml
     verbs: [
       [:connect, :autopilot, :siprec, :stream, :virtual_agent],
       [
@@ -46,6 +43,10 @@ defmodule TwiML do
       :stream
     ]
 
+  import TwiML.Camelize, only: [camelize: 2]
+
+  @external_resource "README.md"
+
   @typedoc """
   A TwiML document contains one or more TwiML verbs. These verbs can have
   attributes and can wrap nested TwiML verbs.
@@ -72,7 +73,8 @@ defmodule TwiML do
   """
   @doc helper: true
   def to_xml(verbs, opts \\ []) do
-    XmlBuilder.document(:Response, verbs)
+    :Response
+    |> XmlBuilder.document(verbs)
     |> XmlBuilder.generate(opts)
   end
 

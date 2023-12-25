@@ -3,8 +3,9 @@ defmodule TwiML.Magic do
 
   defmacro __using__(verbs: verbs) do
     quote do
-      require TwiML.Magic
       import TwiML.Magic
+
+      require TwiML.Magic
     end
 
     for verb <- verbs |> List.flatten() |> Enum.uniq(), do: twiml_verb(verb)

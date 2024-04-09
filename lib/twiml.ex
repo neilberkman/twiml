@@ -79,15 +79,14 @@ defmodule TwiML do
   end
 
   defp build_verb(verb, attrs, children) do
-    verb = verb |> Atom.to_string() |> String.capitalize()
+    verb =
+      verb
+      |> Atom.to_string()
+      |> String.capitalize()
 
     attrs =
       attrs
-      |> Enum.reject(fn
-        {_, nil} -> true
-        {_, ""} -> true
-        _ -> false
-      end)
+      |> Enum.reject(&is_nil(elem(&1, 1)))
       |> Enum.map(fn {k, v} -> {camelize(k, :lower), v} end)
 
     {verb, attrs, children}

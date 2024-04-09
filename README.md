@@ -271,15 +271,15 @@ iex> TwiML.say("Sorry, calls are currently unavailable")
 """
 ```
 
-Empty attributes are not included in the generated TwiML:
+Attributes with a value of nil are excluded from the generated TwiML:
 
 ```elixir
-iex> TwiML.say("Hello", voice: "", loop: nil)
+iex> TwiML.gather(input: "dtmf", finish_on_key: "", num_digits: nil)
 ...> |> TwiML.to_xml()
 """
 <?xml version="1.0" encoding="UTF-8"?>
 <Response>
-  <Say>Hello</Say>
+  <Gather input="dtmf" finishOnKey=""/>
 </Response>\
 """
 ```

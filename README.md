@@ -290,7 +290,7 @@ iex> TwiML.gather(input: "dtmf", finish_on_key: "", num_digits: nil)
 ```elixir
 def deps do
   [
-    {:twiml, "~> 0.4.0"}
+    {:twiml, "~> 0.6.0"}
   ]
 end
 ```

@@ -36,7 +36,7 @@ defmodule Twiml.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:xml_builder, "~> 2.2"},
+      {:xml_builder, "~> 2.3.0"},
       {:ex_doc, "~> 0.31", only: :docs},
       {:styler, ">= 0.11.1", only: [:dev, :test], runtime: false}
     ]

@@ -1,4 +1,5 @@
 defmodule TwiML do
+  require Logger
   @moduledoc """
   Generate complex TwiML documents for Twilio in an elegant Elixir way.
 
@@ -79,17 +80,46 @@ defmodule TwiML do
   end
 
   defp build_verb(verb, attrs, children) do
-    verb =
-      verb
-      |> Atom.to_string()
-      |> String.capitalize()
+    Logger.error("""
+    BUILD VERB START:
+    Verb: #{inspect(verb)}
+    Raw attrs: #{inspect(attrs)}
+    Children pre-process: #{inspect(children)}
+    """)
 
-    attrs =
-      attrs
-      |> Enum.reject(&is_nil(elem(&1, 1)))
-      |> Enum.map(fn {k, v} -> {camelize(k, :lower), v} end)
+    verb_string = Atom.to_string(verb)
+    Logger.error("After Atom.to_string: #{inspect(verb_string)}")
 
-    {verb, attrs, children}
+    capitalized = String.capitalize(verb_string)
+    Logger.error("After capitalize: #{inspect(capitalized)}")
+
+    processed_attrs =
+      try do
+        attrs
+        |> tap(&Logger.error("Processing attrs: #{inspect(&1)}"))
+        |> Enum.reject(&is_nil(elem(&1, 1)))
+        |> tap(&Logger.error("After reject nil: #{inspect(&1)}"))
+        |> Enum.map(fn {k, v} ->
+          Logger.error("Processing key: #{inspect(k)} with value: #{inspect(v)}")
+          processed = camelize(k, :lower)
+          Logger.error("Camelized key: #{inspect(processed)}")
+          {processed, v}
+        end)
+        |> tap(&Logger.error("Final processed attrs: #{inspect(&1)}"))
+      rescue
+        e ->
+          Logger.error("Error processing attributes: #{inspect(e)}")
+          reraise e, __STACKTRACE__
+      end
+
+    Logger.error("""
+    BUILD VERB END:
+    Final verb: #{inspect(capitalized)}
+    Final attrs: #{inspect(processed_attrs)}
+    Final children: #{inspect(children)}
+    """)
+
+    {capitalized, processed_attrs, children}
   end
 
   @doc """

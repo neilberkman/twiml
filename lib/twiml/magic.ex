@@ -1,6 +1,7 @@
 defmodule TwiML.Magic do
   @moduledoc false
 
+  require Logger
   defmacro __using__(verbs: verbs) do
     quote do
       import TwiML.Magic
@@ -14,12 +15,14 @@ defmodule TwiML.Magic do
   def twiml_verb(verb) do
     quote do
       twiml = TwiML.Camelize.camelize(Atom.to_string(unquote(verb)))
+      Logger.error("TWIML VERB: Processing #{inspect(twiml)}")
 
       @doc """
       Generates an empty `<#{twiml}>` verb.
       """
       @spec unquote(verb)() :: TwiML.t()
       def unquote(verb)() do
+        Logger.error("TWIML MATCH: Empty verb clause")
         [build_verb(unquote(verb), [], [])]
       end
 
@@ -38,25 +41,32 @@ defmodule TwiML.Magic do
       def unquote(verb)(arg)
 
       def unquote(verb)(content) when is_binary(content) do
+        Logger.error("TWIML MATCH: Binary content clause - content: #{inspect(content)}")
         [build_verb(unquote(verb), [], content)]
       end
 
       def unquote(verb)({:safe, text} = content) when is_binary(text) do
+        Logger.error("TWIML MATCH: Safe text clause - content: #{inspect(content)}")
         [build_verb(unquote(verb), [], content)]
       end
 
       def unquote(verb)({:cdata, text} = content) when is_binary(text) do
+        Logger.error("TWIML MATCH: CDATA clause - content: #{inspect(content)}")
         [build_verb(unquote(verb), [], content)]
       end
 
       def unquote(verb)({:iodata, text} = content) when is_list(text) do
+        Logger.error("TWIML MATCH: IOData clause - content: #{inspect(content)}")
         [build_verb(unquote(verb), [], content)]
       end
 
       def unquote(verb)(verbs_or_attrs) when is_list(verbs_or_attrs) do
+        Logger.error("TWIML MATCH: List clause - verbs_or_attrs: #{inspect(verbs_or_attrs)}")
         if Keyword.keyword?(verbs_or_attrs) do
+          Logger.error("TWIML PATH: Keyword list - building single verb")
           [build_verb(unquote(verb), verbs_or_attrs, [])]
         else
+          Logger.error("TWIML PATH: Non-keyword list - appending verb")
           verbs_or_attrs ++ [build_verb(unquote(verb), [], [])]
         end
       end
@@ -77,27 +87,33 @@ defmodule TwiML.Magic do
 
       @spec unquote(verb)(TwiML.t(), keyword() | TwiML.content()) :: TwiML.t()
       def unquote(verb)(verbs, attrs) when is_list(verbs) and is_list(attrs) do
+        Logger.error("TWIML MATCH: Two-arg clause with both lists - verbs: #{inspect(verbs)}, attrs: #{inspect(attrs)}")
         verbs ++ [build_verb(unquote(verb), attrs, [])]
       end
 
       def unquote(verb)(verbs, content) when is_binary(content) do
+        Logger.error("TWIML MATCH: Two-arg clause with list+binary - verbs: #{inspect(verbs)}, content: #{inspect(content)}")
         verbs ++ [build_verb(unquote(verb), [], content)]
       end
 
       @spec unquote(verb)(TwiML.content(), keyword()) :: TwiML.t()
       def unquote(verb)(content, attrs) when is_binary(content) do
+        Logger.error("TWIML MATCH: Two-arg clause with binary+attrs - content: #{inspect(content)}, attrs: #{inspect(attrs)}")
         [build_verb(unquote(verb), attrs, content)]
       end
 
       def unquote(verb)({:safe, text} = content, attrs) when is_binary(text) do
+        Logger.error("TWIML MATCH: Two-arg clause with safe text+attrs - content: #{inspect(content)}, attrs: #{inspect(attrs)}")
         [build_verb(unquote(verb), attrs, content)]
       end
 
       def unquote(verb)({:cdata, text} = content, attrs) when is_binary(text) do
+        Logger.error("TWIML MATCH: Two-arg clause with CDATA+attrs - content: #{inspect(content)}, attrs: #{inspect(attrs)}")
         [build_verb(unquote(verb), attrs, content)]
       end
 
       def unquote(verb)({:iodata, text} = content, attrs) when is_list(text) do
+        Logger.error("TWIML MATCH: Two-arg clause with IOData+attrs - content: #{inspect(content)}, attrs: #{inspect(attrs)}")
         [build_verb(unquote(verb), attrs, content)]
       end
 
@@ -110,59 +126,8 @@ defmodule TwiML.Magic do
       @spec unquote(verb)(TwiML.t(), TwiML.content(), keyword()) :: TwiML.t()
       def unquote(verb)(verbs, content, attrs)
           when is_list(verbs) and is_binary(content) and is_list(attrs) do
+        Logger.error("TWIML MATCH: Three-arg clause - verbs: #{inspect(verbs)}, content: #{inspect(content)}, attrs: #{inspect(attrs)}")
         verbs ++ [build_verb(unquote(verb), attrs, content)]
-      end
-
-      @doc """
-      Wraps preceding TwiML verbs in a `<#{twiml}>` verb.
-
-      There are three supported usages:
-      - Uses `attrs_or_last_n_elements` as attributes to wrap all preceding verbs
-        in `<#{twiml}>` if it's a keyword list.
-      - Wraps all preceding verbs in `<#{twiml}>` if `attrs_or_last_n_elements` is
-        `:all`.
-      - Encloses the last `attrs_or_last_n_elements` verbs in `<#{twiml}>` if it's a
-        positive integer.
-      """
-      @spec unquote(String.to_atom("into_#{verb}"))(
-              TwiML.t(),
-              keyword() | :all | pos_integer()
-            ) :: TwiML.t()
-      def unquote(String.to_atom("into_#{verb}"))(verbs, attrs_or_last_n_elements \\ :all)
-
-      def unquote(String.to_atom("into_#{verb}"))(verbs, attrs_or_last_n_elements)
-          when is_integer(attrs_or_last_n_elements) or is_atom(attrs_or_last_n_elements) do
-        unquote(String.to_atom("into_#{verb}"))(verbs, attrs_or_last_n_elements, [])
-      end
-
-      def unquote(String.to_atom("into_#{verb}"))(verbs, attrs) when is_list(attrs) do
-        unquote(String.to_atom("into_#{verb}"))(verbs, :all, attrs)
-      end
-
-      @doc """
-      Wraps preceding TwiML verbs in a `<#{twiml}>` verb with attributes.
-
-      There are three supported usages:
-      - Wraps all preceding verbs in `<#{twiml}>` using `attrs` as attributes if
-        `last_n_elements` is `:all`.
-      - Encloses the last `last_n_elements` verbs in `<#{twiml}>` using `attrs`
-        as attribute if it's a positive integer.
-      """
-      @spec unquote(String.to_atom("into_#{verb}"))(
-              TwiML.t(),
-              :all | pos_integer(),
-              keyword()
-            ) :: TwiML.t()
-      def unquote(String.to_atom("into_#{verb}"))(verbs, last_n_elements, attrs)
-
-      def unquote(String.to_atom("into_#{verb}"))(verbs, :all, attrs) do
-        [build_verb(unquote(verb), attrs, [verbs])]
-      end
-
-      def unquote(String.to_atom("into_#{verb}"))(verbs, last_n_elements, attrs)
-          when is_integer(last_n_elements) and last_n_elements > 0 do
-        {head, tail} = Enum.split(verbs, last_n_elements * -1)
-        head ++ [build_verb(unquote(verb), attrs, [tail])]
       end
     end
   end
